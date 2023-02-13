@@ -4,7 +4,7 @@
 * @brief     
 * @author    Daxia_Su
 * @email     daxia-su@qq.com
-* @version   1.0
+* @version   1.0.0
 * @date      2023-02-12  
 Python code£ºhttps://github.com/liuchangji/2D-Kalman-Filter-Example_Dr_CAN_in_python
 Dr_can's course links£ºhttps://www.bilibili.com/video/BV1ez4y1X7eR/?spm_id_from=333.999.0.0&vd_source=f9ae7beffa7e639a0e8f63cf744cf6f5
@@ -124,30 +124,39 @@ int main(int argc, char** argv)
     Eigen::Matrix<float,2,2> p_firstest;
     // Kalman Gain
     Eigen::Matrix<float, 2, 2> K_k1, K_k2, K_k;
-    // eye
+    // Eye
     Eigen::Matrix<float, 2, 2> eye;
     eye << 1,0,0,1;
 
+    // create a csv file
+    ofstream ofs;
+    ofs.open("data.csv", ios::out);
+    ofs << "pos_postest" << ',' << "speed_postest" << ',' << "pos_true" << ',' << "speed_true" << ','
+        << "pos_measure" << ',' << "speed_measure" << ',' << "pos_firstest" << ',' << "speed_firstest"<< endl; 
+
     for(int i = 0; i < 30; i++)
     {
-        //-------------------generate the true value of position and velocity-------------------//
+        //----------------------generate the true value of position and velocity-------------------//
         w = gaussian_distribution_generator(0, person.readQ());
         x_true = (person.readA() * x_true) + w;
-        //-------------------generate the value of the observation------------------------------//
+        //----------------------generate the value of the observation------------------------------//
         v = gaussian_distribution_generator(0, person.readR());
         z_measure = person.readH() * x_true + v;
-
-        //-------------------calculate the firstest---------------------------------------------//
+        //----------------------calculate the firstest---------------------------------------------//
         x_firstest = person.readA() * x_postest;
         p_firstest = person.readA() * p_postest * person.readA().transpose() + person.readQ();
-        //-------------------calculate the Kalman Gain------------------------------------------//
+        //----------------------calculate the Kalman Gain------------------------------------------//
         K_k1 = p_firstest * person.readH().transpose();
         K_k2 = person.readH() * p_firstest * person.readH().transpose() + person.readR();
         K_k = K_k1 * K_k2.inverse();
-        // //-------------------calculate the postest---------------------------------------------//
+        // //-------------------calculate the postest----------------------------------------------//
         x_postest = x_firstest + K_k * (z_measure - person.readH()*x_firstest);
         p_postest = (eye - K_k * person.readH()) * p_firstest;
+
+        ofs << x_postest(0,0) << ',' << x_postest(1,0) << ',' << x_true(0,0) << ',' << x_true(1,0) << ','
+            << z_measure(0,0) << ',' << z_measure(1,0) << ',' << x_firstest(0,0) << ',' << x_firstest(1,0) << endl;
     }
+    ofs.close();
 
     system("pause");
     return 0;
