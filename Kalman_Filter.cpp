@@ -4,7 +4,7 @@
 * @brief     
 * @author    Daxia_Su
 * @email     daxia-su@qq.com
-* @version   1.0.0
+* @version   1.0.1
 * @date      2023-02-12  
 Python code£ºhttps://github.com/liuchangji/2D-Kalman-Filter-Example_Dr_CAN_in_python
 Dr_can's course links£ºhttps://www.bilibili.com/video/BV1ez4y1X7eR/?spm_id_from=333.999.0.0&vd_source=f9ae7beffa7e639a0e8f63cf744cf6f5
